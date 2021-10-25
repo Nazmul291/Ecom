@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% for i in item %}
+<span class="check_box" id="{{i.id}}">
+    {% if i.option %}
+    <img src="static/img/check.svg" class="{{i.id}}" height="50px" alt="check">
+    {% else %}
+    <img src="static/img/uncheck.svg" class="{{i.id}}" height="50px" alt="uncheck">
+    {% endif %}
+</span>
+{% endfor %}
+
+{% endblock %}

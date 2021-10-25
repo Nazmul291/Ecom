@@ -1,0 +1,109 @@
+
+{% extends 'base.html' %}
+{% load mathfilters %}
+{% load static %}
+{% block content %}
+    <!-- Breadcrumb Start -->
+    <div class="breadcrumb-wrap">
+        <div class="container-fluid">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Products</a></li>
+                <li class="breadcrumb-item active">Cart</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Cart Start -->
+    <div class="cart-page">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="cart-page-inner">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Option</th>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th>Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="align-middle">
+<!--                                cart items-->
+                                {% for i in cart_item %}
+                                    <tr>
+                                        <td>
+                                            <div class="img">
+                                                <span class="check_box" id="{{i.id}}">
+                                                    {% if i.option %}
+                                                    <img src="static/img/check.svg" class="{{i.id}}" height="50px" alt="check">
+                                                    {% else %}
+                                                    <img src="static/img/uncheck.svg" class="{{i.id}}" height="50px" alt="uncheck">
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="img">
+                                                <a href="#"><img src="{{i.product.image.url}}" alt="Image"></a>
+                                                <p>{{i.product.name}}</p>
+                                            </div>
+                                        </td>
+                                        <td>${{i.product.sale_price}}</td>
+                                        <td>
+                                            <div class="qty">
+                                                <button class="btn-minus" m_id="{{i.id}}"><i class="fa fa-minus"></i></button>
+                                                <input type="text" value="{{i.quantity}}" disabled>
+                                                <button class="btn-plus" d_id="{{i.id}}" ><i class="fa fa-plus"></i></button>
+                                            </div>
+                                        </td>
+                                        <td>$<span>{{i.product.sale_price|mul:i.quantity}}</span></td>
+                                        <td><button class="remove_item" c_id="{{i.id}}"><i class="fa fa-trash"></i></button></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="cart-page-inner">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form class="coupon" action="{% url 'cupon' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input id="cupon_code" type="text" name="values" placeholder="Coupon Code">
+                                    <button type="submit">Apply Code</button>
+                                </form>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="cart-summary">
+                                    <div class="cart-content">
+                                        <h1>Cart Summary</h1>
+                                        <p id="sub_total">Sub Total<span>$<span>{{total}}</span></span></p>
+                                        <p id="shipping">Shipping Cost<span>$<span>{{shipping}}</span></span></p>
+                                        {% if discount >= 1 %}
+                                        <p id="discount">Discount Amount<span>-$<span>{{discount}}</span></span></p>
+                                        {% endif %}
+                                        <h2 id="grand_total">Grand Total<span>$<span>{{grand_total}}</span></span></h2>
+                                    </div>
+                                    <div class="cart-btn">
+                                        <button>Update Cart</button>
+                                        <button>Checkout</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cart End -->
+        
+    {% endblock %}
