@@ -140,8 +140,6 @@ def check_item(request):
         option = x.option
         # discounted amount
         discount = discount_amount(user)
-        for i in discount:
-            i.delete()
         # check the item is selected or not
         if option:
             option = False
