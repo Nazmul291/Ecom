@@ -196,22 +196,48 @@ def search(request):
         key = request.POST['search_input'].split()
         # getting info from all products and filter it accordingly
         data = Product.objects.all()
-        match = []
+        match1 = []
+        match2 = []
+        match3 = []
+
         for product in data:
-            p_n = product.name.split()
-            p_d = product.description.split()
-            query = [p_n, p_d]
-            for product_dtl in query:
-                for y in product_dtl:
-                    y = y.lower()
-                    print(f' y = {y}')
-                    for k in key:
-                        power = 0
-                        if k == y:
-                            power += 1
-                            if product not in match:
-                                match.append(product)
-        match = [m for m in match[::-1]]
+            for k in key:
+                if len(k) >= 3:
+                    p_n = product.name.split()
+                    p_d = product.description.split()
+                    for p in p_n:
+                        q1 = k.lower()
+                        q3 = p.lower()
+                        if q1 == q3:
+                            if product not in match1:
+                                match1.append(product)
+                        elif q1[0:3] == q3[0:3]:
+                            if product not in match1:
+                                match1.append(product)
+                        elif q1[-4:] == q3[-4:]:
+                            if product not in match2:
+                                match2.append(product)
+                    for p in p_d:
+                        q1 = k.lower()
+                        q3 = p.lower()
+                        if q1 == q3:
+                            if product not in match2:
+                                match2.append(product)
+                        elif q1[0:3] == q3[0:3]:
+                            if product not in match3:
+                                match3.append(product)
+                        elif q1[-4:] == q3[-4:]:
+                            if product not in match3:
+                                match3.append(product)
+        match = []
+        for m1 in match1:
+            match.append(m1)
+        for m2 in match2:
+            if m2 not in match:
+                match.append(m2)
+        for m3 in match3:
+            if m3 not in match:
+                match.append(m3)
         return render(request, "Apps_Products/search.html", {'match': match})
 # end search engine
 
