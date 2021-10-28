@@ -496,7 +496,7 @@ def cupon(request):
             *rest, last = cupon
             amount = cupon_discount(last, user)
             if amount <= 0:
-                messages.info(request, "You are not eligible or you already use this cupon code")
+                messages.warning(request, "You are not eligible or you already use this cupon code")
         else:
             messages.warning(request, "This cupon code is not valid")
             return redirect("/addcart")
