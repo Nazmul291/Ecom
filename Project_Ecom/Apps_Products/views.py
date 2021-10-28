@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import auth
 from .models import *
+from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 import math
@@ -269,16 +270,19 @@ def user_registration(request):
         # getting first confirm password from user
         confirm_password = request.POST['Confirm_Password']
         # password varification
-        if len(password) > 6 and password == confirm_password:
+        if len(password) >= 6 and password == confirm_password:
             if User.objects.filter(email=email).exists():
+                messages.warning(request, "user name or email taken")
                 return redirect('user_registration')
             else:
                 user = User.objects.create_user(username=email, password=password, email=email, first_name=first_name, last_name=last_name)
                 user.save()
                 authentication(request, email, password)
+                messages.success(request, "user created")
                 return redirect('/')
         else:
-            return redirect('/user_registration')
+            messages.warning(request, "Password not matching or password length is less then 6 character")
+            return redirect('user_registration')
     else:
         return render(request, 'Apps_Products/register.html')
 
@@ -298,6 +302,9 @@ def user_login(request):
                 return redirect(request.POST.get('next'))
             else:
                 return redirect('/')
+        else:
+            messages.warning(request, "Email or password not matching")
+            return redirect('/')
     else:
         return render(request, 'Apps_Products/login.html')
 
@@ -475,6 +482,7 @@ def btn_minus(request):
         return redirect("/addcart")
 
 
+# cupon discount
 def cupon(request):
     # check the request methode
     if request.method == "POST":
@@ -486,9 +494,11 @@ def cupon(request):
         if Cupon.objects.filter(code=code).exists():
             cupon = Cupon.objects.filter(code=code)
             *rest, last = cupon
-            cupon_discount(last, user)
-
+            amount = cupon_discount(last, user)
+            if amount <= 0:
+                messages.info(request, "You are not eligible or you already use this cupon code")
         else:
+            messages.warning(request, "This cupon code is not valid")
             return redirect("/addcart")
 
     return redirect("/addcart")
