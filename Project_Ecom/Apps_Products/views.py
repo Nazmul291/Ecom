@@ -497,6 +497,8 @@ def cupon(request):
             amount = cupon_discount(last, user)
             if amount <= 0:
                 messages.warning(request, "You are not eligible or you already use this cupon code")
+            else:
+                messages.success(request, f"Congratulation! you got ${amount} discount")
         else:
             messages.warning(request, "This cupon code is not valid")
             return redirect("/addcart")
