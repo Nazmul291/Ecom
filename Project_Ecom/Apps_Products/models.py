@@ -73,11 +73,15 @@ class Discount(models.Model):
 
 
 # customers orders
-class Order(models.Model):
-    products = models.ForeignKey(Product, on_delete=models.CASCADE)
+class Summary(models.Model):
     sub_total = models.FloatField(default=0)
     discount = models.FloatField(default=0)
     shipping = models.FloatField(default=0)
     grand_total = models.FloatField(default=0)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now=True)
+
+
+class OrderedItem(models.Model):
+    products = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
